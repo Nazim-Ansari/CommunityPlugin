@@ -463,6 +463,7 @@
     </Compile>
     <Compile Include="Standard Plugins\OpeneFolderDocument.cs" />
     <Compile Include="Standard Plugins\OpenInputForm.cs" />
+    <Compile Include="Standard Plugins\TestPlugin.cs" />
     <Compile Include="Standard Plugins\VirtualFields.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -52133,16 +52133,6 @@ class LicenseGenerator
             Authorizes the Encompass Session to ensure it can be used.
             </summary>
         </member>
-        <member name="M:EllieMae.Encompass.Licensing.LicenseManager.isMacAddressInList(System.String[],System.String)">
-            <summary>
-            Looks for a MAC address in a list of MAC addresses
-            </summary>
-        </member>
-        <member name="M:EllieMae.Encompass.Licensing.LicenseManager.GetMacAddresses(System.Boolean)">
-            <summary>
-            Retrieves the MAC address info for the current system.
-            </summary>
-        </member>
         <member name="T:EllieMae.Encompass.Licensing.ILicenseManager">
             <summary>
             Interface for LicenseManager class.
