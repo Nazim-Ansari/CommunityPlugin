@@ -23389,7 +23389,7 @@ class LoanManager
             <summary>MISMO AUS v2.4 format.</summary>
         </member>
         <member name="F:EllieMae.Encompass.BusinessObjects.Loans.LoanExportFormat.EDRS">
-            <summary>Encompass Data Replication Services format.</summary>
+            <exclude>Encompass Data Replication Services format.</exclude> 
         </member>
         <member name="F:EllieMae.Encompass.BusinessObjects.Loans.LoanExportFormat.LOANDELIVERY">
             <summary> ULDD Loan Deliver.</summary>

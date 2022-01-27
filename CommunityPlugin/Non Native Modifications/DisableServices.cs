@@ -19,7 +19,10 @@ namespace CommunityPlugin.Non_Native_Modifications
         private bool ShouldRun;
         private const string Field = "CX.DISABLE.SERVICES";
         private Form OpenForm;
-        private TabControl TabControl => (TabControl)OpenForm.Controls.Find("orderTab", true)[0];
+        HashSet<string> FormNames = new HashSet<string>() {"OrderDialog", "AppraserDialog", "LenderDialog" };
+        private bool isLender => OpenForm.Name.Equals("LenderDialog");
+        private bool isAppraiser => OpenForm.Name.Equals("AppraserDialog");
+        private TabControl TabControl  => (TabControl)OpenForm.Controls.Find((isLender ? "lenderTab" : "orderTab"), true)[0];
 
         public override void LoanTabChanged(object sender, EventArgs e)
         {
@@ -85,7 +88,7 @@ namespace CommunityPlugin.Non_Native_Modifications
 
         public override void NativeFormLoaded(object sender, FormOpenedArgs e)
         {
-            if (e.OpenForm.Name.Equals("OrderDialog"))
+            if (FormNames.Contains(e.OpenForm.Name))
             {
                 OpenForm = e.OpenForm;
                 Timer t = new Timer();
@@ -113,7 +116,8 @@ namespace CommunityPlugin.Non_Native_Modifications
 
         private void RefreshGrid(bool Supress = false)
         {
-            Control[] controls = OpenForm.Controls.Find(TabControl.SelectedIndex.Equals(0) ? "myLst" : "allLst", true);
+            string controlID = isAppraiser ? "lvwMyAppraisers" : TabControl.SelectedIndex.Equals(0) ? "myLst" : "allLst";
+            Control[] controls = OpenForm.Controls.Find(controlID, true);
             if (controls.Count().Equals(0))
                 return;
 
