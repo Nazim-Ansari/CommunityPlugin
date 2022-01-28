@@ -37,10 +37,7 @@ namespace CommunityPlugin.Non_Native_Modifications.TopMenu
         private void TxtUser_TextChanged(object sender, EventArgs e)
         {
 
-            string user = txtUser.Text;
 
-            lbResults.Items.Clear();
-            lbResults.Items.AddRange(EncompassApplication.Session.Users.GetAllUsers().Cast<User>().Where(x => x.Enabled && x.ID.Contains(user)).Select(x => x.ID).ToArray());
         }
 
         private void RefreshPipeline()

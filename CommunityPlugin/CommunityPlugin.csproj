@@ -273,6 +273,13 @@
       <DependentUpon>LoanFolderMove_Form.cs</DependentUpon>
     </Compile>
     <Compile Include="Non Native Modifications\TopMenu\MenuItemBase.cs" />
+    <Compile Include="Non Native Modifications\TopMenu\PipelineViewTransfer.cs" />
+    <Compile Include="Non Native Modifications\TopMenu\PipelineViewTransfer_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Non Native Modifications\TopMenu\PipelineViewTransfer_Form.Designer.cs">
+      <DependentUpon>PipelineViewTransfer_Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Non Native Modifications\TopMenu\PluginManagement.cs" />
     <Compile Include="Non Native Modifications\TopMenu\PluginManagement_Form.cs">
       <SubType>Form</SubType>
@@ -494,6 +501,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Non Native Modifications\TopMenu\LoanFolderMove_Form.resx">
       <DependentUpon>LoanFolderMove_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Non Native Modifications\TopMenu\PipelineViewTransfer_Form.resx">
+      <DependentUpon>PipelineViewTransfer_Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Non Native Modifications\TopMenu\PluginManagement_Form.resx">
       <DependentUpon>PluginManagement_Form.cs</DependentUpon>

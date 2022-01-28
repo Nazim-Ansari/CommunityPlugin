@@ -29,28 +29,19 @@
         private void InitializeComponent()
         {
             this.btnReturn = new System.Windows.Forms.Button();
-            this.lbResults = new System.Windows.Forms.ListBox();
             this.txtUser = new System.Windows.Forms.TextBox();
             this.btnImpersonate = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnReturn
             // 
-            this.btnReturn.Location = new System.Drawing.Point(12, 162);
+            this.btnReturn.Location = new System.Drawing.Point(12, 35);
             this.btnReturn.Name = "btnReturn";
             this.btnReturn.Size = new System.Drawing.Size(181, 23);
             this.btnReturn.TabIndex = 7;
             this.btnReturn.Text = "Return to Myself";
             this.btnReturn.UseVisualStyleBackColor = true;
             this.btnReturn.Click += new System.EventHandler(this.BtnReturn_Click);
-            // 
-            // lbResults
-            // 
-            this.lbResults.FormattingEnabled = true;
-            this.lbResults.Location = new System.Drawing.Point(12, 35);
-            this.lbResults.Name = "lbResults";
-            this.lbResults.Size = new System.Drawing.Size(181, 121);
-            this.lbResults.TabIndex = 6;
             // 
             // txtUser
             // 
@@ -74,9 +65,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(200, 193);
+            this.ClientSize = new System.Drawing.Size(200, 66);
             this.Controls.Add(this.btnReturn);
-            this.Controls.Add(this.lbResults);
             this.Controls.Add(this.txtUser);
             this.Controls.Add(this.btnImpersonate);
             this.Name = "Impersonate_Form";
@@ -89,7 +79,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnReturn;
-        private System.Windows.Forms.ListBox lbResults;
         private System.Windows.Forms.TextBox txtUser;
         private System.Windows.Forms.Button btnImpersonate;
     }
