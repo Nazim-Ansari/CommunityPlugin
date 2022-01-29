@@ -33,10 +33,10 @@ namespace CommunityPlugin.Non_Native_Modifications.Pipeline
             btnReassign.Text = $"Reassign {Info.Count} Loans";
             cmbPersonas.Items.AddRange(EncompassApplication.Session.Users.Personas.Cast<Persona>().Select(x => x.Name).ToArray());
             cmbPersonas.TextChanged += CmbPersonas_TextChanged;
-            cmbPersonas.Text = "Loan Officer";
+            cmbPersonas.SelectedIndex = 1;
             Roles = ((WorkflowManager)Session.DefaultInstance.BPM.GetBpmManager(BpmCategory.Workflow)).GetAllRoleFunctions();
             cmbRole.Items.AddRange(Roles.Select(x => x.Name).ToArray());
-            cmbRole.Text = "Loan Officer";
+            cmbRole.Text = Roles.FirstOrDefault().Name;
         }
         private void CmbPersonas_TextChanged(object sender, EventArgs e)
         {
@@ -74,10 +74,8 @@ namespace CommunityPlugin.Non_Native_Modifications.Pipeline
                 }
             }
 
-            if (MessageBox.Show($"Loans have been reassigned", "Reassign", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
-            {
-                this.Close();
-            }
+            MessageBox.Show($"Loans have been reassigned");
+            this.Close();
         }
     }
 
