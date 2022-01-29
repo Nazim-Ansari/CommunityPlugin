@@ -473,3 +473,4 @@ C:\Code\CommunityPlugin\CommunityPlugin\bin\Debug\Elli.SQE.IO.PGSQL.dll.config
 C:\Code\CommunityPlugin\CommunityPlugin\bin\Debug\Calendar.dll.config
 C:\Code\CommunityPlugin\CommunityPlugin\bin\Debug\Synchronization.dll.config
 C:\Code\CommunityPlugin\CommunityPlugin\obj\Debug\CommunityPlugin.Non_Native_Modifications.TopMenu.PipelineViewTransfer_Form.resources
+C:\Code\CommunityPlugin\CommunityPlugin\obj\Debug\CommunityPlugin.csprojAssemblyReference.cache

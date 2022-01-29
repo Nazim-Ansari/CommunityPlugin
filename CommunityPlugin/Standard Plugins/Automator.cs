@@ -18,7 +18,7 @@ namespace CommunityPlugin.Standard_Plugins
 
         public override void Login(object sender, EventArgs e)
         {
-            if (!EncompassHelper.User.ID.Equals("Automator"))
+            if (!EncompassHelper.User.ID.Equals("Automator", StringComparison.InvariantCultureIgnoreCase))
                 return;
 
             Producer = new BlockingCollectionQueue();
