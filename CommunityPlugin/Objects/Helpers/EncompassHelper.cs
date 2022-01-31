@@ -22,30 +22,26 @@ using EllieMae.Encompass.BusinessObjects.Loans.Logging;
 using CommunityPlugin.Objects.Interface;
 using CommunityPlugin.Objects.BaseClasses;
 using EllieMae.Encompass.Query;
+using EllieMae.EMLite.Common.UI;
+using Outlook;
+using System.Collections.ObjectModel;
+using System.Net;
+using EllieMae.EMLite.RemotingServices;
 
 namespace CommunityPlugin.Objects.Helpers  
-{ 
+{
     public static class EncompassHelper
     {
+        #region Properties
         public static Loan CurrentLoan => EncompassApplication.CurrentLoan;
-        //public static bool IsTest()
-        //{
-        //    CommunitySettings cdo = CustomDataObject.Get<CommunitySettings>(CommunitySettings.Key);
-        //    return EncompassApplication.Session.ServerURI.Contains(cdo.TestServer);
-        //}
-
-        public static string FieldDescription(string FieldID)
+        public static bool IsTest()
         {
-            return EncompassApplication.Session.Loans.FieldDescriptors[FieldID].Description;
+            //uri contains TEBE
+            return false;
         }
 
-        public static string LastPersona
-        {
-            get
-            {
-                return EncompassHelper.User.Personas?.Cast<Persona>().LastOrDefault().Name ?? string.Empty;
-            }
-        }
+        public static string FieldDescription(string FieldID)=> EncompassApplication.Session.Loans.FieldDescriptors[FieldID].Description;
+        public static string LastPersona=> EncompassHelper.User.Personas?.Cast<Persona>().LastOrDefault().Name ?? string.Empty;
 
         public static string LoanNumberToGuid(string LoanNumber)
         {
@@ -53,11 +49,13 @@ namespace CommunityPlugin.Objects.Helpers
             {
                 return EncompassApplication.Session.Loans.Query(new StringFieldCriterion("Fields.364", LoanNumber, StringFieldMatchType.Exact, true))[0].Guid;
             }
-            catch(Exception ex)
+            catch (System.Exception ex)
             {
                 return string.Empty;
             }
         }
+
+        #endregion Properties
 
         public static void SubmitBatch(BatchUpdate Batch)
         {
@@ -75,7 +73,7 @@ namespace CommunityPlugin.Objects.Helpers
                 calc = collect.GetResultByMapping(translation, true);
 
             }
-            catch(Exception ex)
+            catch (System.Exception ex)
             {
                 Logger.HandleError(ex, nameof(ParseExpression));
             }
@@ -107,7 +105,7 @@ namespace CommunityPlugin.Objects.Helpers
 
         public static string[] GetAllMilestones()
         {
-            return EncompassApplication.Session.Loans.Milestones.Cast<EllieMae.Encompass.BusinessEnums.Milestone>().OrderBy(x=>x.Name).Select(x => x.Name).ToArray();
+            return EncompassApplication.Session.Loans.Milestones.Cast<EllieMae.Encompass.BusinessEnums.Milestone>().OrderBy(x => x.Name).Select(x => x.Name).ToArray();
         }
 
         public static string[] GetFolders()
@@ -124,31 +122,90 @@ namespace CommunityPlugin.Objects.Helpers
             string[] result = new string[fields.Length];
             StringList fieldsToAdd = new StringList();
             foreach (string field in fields)
-                fieldsToAdd.Add($"Fields.{field}");
+            {
+                if(EncompassApplication.Session.Loans.FieldDescriptors.Cast<FieldDescriptor>().Any(x=>x.FieldID.Equals(field, StringComparison.InvariantCulture)))
+                    fieldsToAdd.Add($"Fields.{field}");
+            }
+            if (fieldsToAdd.Count.Equals(0))
+                return result;
+
             LoanReportData data = EncompassApplication.Session.Reports.SelectReportingFieldsForLoan(guid, fieldsToAdd);
             for (int i = 0; i < fields.Length; i++)
                 result[i] = data[$"Fields.{fields[i]}"].ToString();
 
             return result;
         }
-        public static void SendEmail(MailMessage Message)
+        public static void SendEmail(MailMessage msg)
+        {
+            if (ContactUtils.GetCurrentMailDeliveryMethod() == EmailDeliveryMethod.SMTP)
+                SendSMTPMail(msg);
+            else
+                ContactUtils.SendOutlookMail(msg);
+        }
+        public static void SendSMTPMail(MailMessage msg)
+        {
+            SMTPMailSettings smtpMailSettings = getSMTPMailSettings();
+            if (smtpMailSettings == null)
+                throw new System.Exception("No valid SMTP settings detected");
+            SmtpClient smtpClient = new SmtpClient();
+            smtpClient.Host = smtpMailSettings.Server;
+            smtpClient.Port = smtpMailSettings.Port;
+            smtpClient.EnableSsl = smtpMailSettings.UseSSL;
+            if (smtpMailSettings.UserName != "")
+                smtpClient.Credentials = (ICredentialsByHost)new NetworkCredential(smtpMailSettings.UserName, smtpMailSettings.Password);
+            try
+            {
+                smtpClient.Send(msg);
+            }
+            catch (System.Exception ex)
+            {
+
+            }
+        }
+        private static SMTPMailSettings getSMTPMailSettings()
+        {
+            SMTPMailSettings smtpMailSettings = new SMTPMailSettings();
+            if ((bool)Session.ServerManager.GetServerSetting("Mail.SMTPAllowOverride") & (Session.GetPrivateProfileString("Mail", "SMTPOverride") ?? "").ToLower() == "true")
+            {
+                smtpMailSettings.Server = Session.GetPrivateProfileString("Mail", "SMTPServer") ?? "";
+                smtpMailSettings.Port = ParseInt(Session.GetPrivateProfileString("Mail", "SMTPPort"), 25);
+                smtpMailSettings.UserName = Session.GetPrivateProfileString("Mail", "SMTPUserName") ?? "";
+                smtpMailSettings.Password = Session.GetPrivateProfileString("Mail", "SMTPPassword") ?? "";
+                smtpMailSettings.UseSSL = Session.GetPrivateProfileString("Mail", "SMTPUseSSL") == "True";
+            }
+            else
+            {
+                smtpMailSettings.Server = string.Concat(Session.ServerManager.GetServerSetting("Mail.SMTPServer"));
+                smtpMailSettings.Port = (int)Session.ServerManager.GetServerSetting("Mail.SMTPPort");
+                smtpMailSettings.UseSSL = Session.SessionObjects.GetCompanySettingFromCache("Mail", "SMTPUseSSL") == "True";
+                if ((bool)Session.ServerManager.GetServerSetting("Mail.SMTPIndividualLogin"))
+                {
+                    smtpMailSettings.RequireUserName = true;
+                    smtpMailSettings.UserName = Session.GetPrivateProfileString("Mail", "SMTPUserName") ?? "";
+                    smtpMailSettings.Password = Session.GetPrivateProfileString("Mail", "SMTPPassword") ?? "";
+                }
+                else
+                {
+                    smtpMailSettings.UserName = string.Concat(Session.ServerManager.GetServerSetting("Mail.SMTPUserName"));
+                    smtpMailSettings.Password = string.Concat(Session.ServerManager.GetServerSetting("Mail.SMTPPassword"));
+                }
+            }
+            return smtpMailSettings;
+        }
+        private static int ParseInt(string value, int defaultValue)
         {
             try
             {
-                ContactUtils.SendMail(Message);
+                return int.Parse(value);
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.HandleError(ex, nameof(SendEmail));
+                return defaultValue;
             }
         }
 
-        public static Loan Loan
-        {
-            get { return EncompassApplication.CurrentLoan; }
-        }
-
-        public static LoanDataMgr LoanDataManager {get{ return RemoteSession.LoanDataMgr; }}
+        public static Loan Loan => EncompassApplication.CurrentLoan;
+        public static LoanDataMgr LoanDataManager => RemoteSession.LoanDataMgr;
 
         public static string LoanNumber()
         {

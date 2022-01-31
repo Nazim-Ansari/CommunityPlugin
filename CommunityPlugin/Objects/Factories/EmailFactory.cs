@@ -143,9 +143,10 @@ namespace CommunityPlugin.Objects.Factories
             string[] split = result.Split('[', ']');
             string finalHtml = String.Join(" ", split);
             string[] mergeFields = result.Split().Where(x => x.StartsWith("[") && x.EndsWith("]")).Select(x => x.Replace("[", "").Replace("]", "")).ToArray();
+            
             string[] values = EncompassHelper.GetReportValues(mergeFields, guid);
 
-            for (int i = 0; i < mergeFields.Length; i++)
+            for (int i = 0; i < values.Length; i++)
             {
                 result = result.Replace($"[{mergeFields[i]}]", values[i]);
             }

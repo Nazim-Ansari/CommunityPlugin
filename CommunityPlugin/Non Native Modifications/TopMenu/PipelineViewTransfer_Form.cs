@@ -25,9 +25,18 @@ namespace CommunityPlugin.Non_Native_Modifications.TopMenu
 
             cmbFrom.Items.AddRange(users);
             cmbTo.Items.AddRange(users);
+            cmbType.Items.AddRange(Enum.GetNames(typeof(TemplateSettingsType)));
+            cmbType.Text = TemplateSettingsType.PipelineView.ToString();
 
             cmbFrom.SelectedIndexChanged += CmbFrom_SelectedIndexChanged;
             cmbTo.SelectedIndexChanged += CmbTo_SelectedIndexChanged;
+            cmbType.SelectedIndexChanged += CmbType_SelectedIndexChanged;
+        }
+
+        private void CmbType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshTo();
+            RefreshFrom();
         }
 
         private void CmbTo_SelectedIndexChanged(object sender, EventArgs e)
@@ -42,7 +51,8 @@ namespace CommunityPlugin.Non_Native_Modifications.TopMenu
             if (string.IsNullOrEmpty(id))
                 return;
 
-            FileSystemEntry[] viewFileEntries = Session.ConfigurationManager.GetAllTemplateSettingsFileEntries(TemplateSettingsType.PipelineView, id);
+            TemplateSettingsType type = (TemplateSettingsType)Enum.Parse(typeof(TemplateSettingsType), cmbType.Text);
+            FileSystemEntry[] viewFileEntries = Session.ConfigurationManager.GetAllTemplateSettingsFileEntries(type, id);
             lbToViews.Items.AddRange(viewFileEntries.Select(x => x.Name).ToArray());
         }
 
@@ -58,7 +68,8 @@ namespace CommunityPlugin.Non_Native_Modifications.TopMenu
             if (string.IsNullOrEmpty(id))
                 return;
 
-            CurrentUserEntries = Session.ConfigurationManager.GetAllTemplateSettingsFileEntries(TemplateSettingsType.PipelineView, id);
+            TemplateSettingsType type = (TemplateSettingsType)Enum.Parse(typeof(TemplateSettingsType), cmbType.Text);
+            CurrentUserEntries = Session.ConfigurationManager.GetAllTemplateSettingsFileEntries(type, id);
             clbViews.Items.AddRange(CurrentUserEntries.Select(x => x.Name).ToArray());
         }
 
@@ -74,8 +85,9 @@ namespace CommunityPlugin.Non_Native_Modifications.TopMenu
                 if (string.IsNullOrEmpty(userID))
                     return;
 
-                var view = Session.ConfigurationManager.GetTemplateSettings(TemplateSettingsType.PipelineView, entry);
-                Session.ConfigurationManager.SaveTemplateSettings(TemplateSettingsType.PipelineView, FileSystemEntry.PrivateRoot(userID).Combine(entry.Name), view);
+                TemplateSettingsType type = (TemplateSettingsType)Enum.Parse(typeof(TemplateSettingsType), cmbType.Text);
+                var view = Session.ConfigurationManager.GetTemplateSettings(type, entry);
+                Session.ConfigurationManager.SaveTemplateSettings(type, FileSystemEntry.PrivateRoot(userID).Combine(entry.Name), view);
             }
             RefreshTo();
         }
