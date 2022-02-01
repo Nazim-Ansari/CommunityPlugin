@@ -318,6 +318,7 @@
     <Compile Include="Objects\BaseClasses\Tracer.cs" />
     <Compile Include="Objects\BaseClasses\Translator.cs" />
     <Compile Include="Objects\BaseClasses\XConfiguration.cs" />
+    <Compile Include="Objects\CustomDataObjects\GKConfig.cs" />
     <Compile Include="Objects\CustomDataObjects\LoanFolderRules.cs" />
     <Compile Include="Objects\Enums\CDOType.cs" />
     <Compile Include="Objects\Enums\CloneBizRuleType.cs" />
@@ -464,6 +465,7 @@
     <Compile Include="Standard Plugins\Forms\CodebaseAssemblies\SettingsExtract\Form_Example.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Standard Plugins\GKPlugin.cs" />
     <Compile Include="Standard Plugins\HCAutomate.cs" />
     <Compile Include="Standard Plugins\KickEveryoneOut.cs" />
     <Compile Include="Standard Plugins\LiveTestUser.cs" />

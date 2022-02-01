@@ -22,7 +22,7 @@ namespace CommunityPlugin.Objects.Factories
     {
         public List<ITask> GetTriggers()
         {
-            AutoMailerCDO cdo = CustomDataObject.Get<AutoMailerCDO>(AutoMailerCDO.Key);
+            AutoMailerCDO cdo = CustomDataObject.Get<AutoMailerCDO>();
             List<MailTrigger> Triggers = cdo.Triggers; 
 
             List<ITask> result = new List<ITask>();
@@ -148,6 +148,7 @@ namespace CommunityPlugin.Objects.Factories
 
             for (int i = 0; i < values.Length; i++)
             {
+                string val = values[i] == null ? mergeFields[i] : values[i];
                 result = result.Replace($"[{mergeFields[i]}]", values[i]);
             }
 

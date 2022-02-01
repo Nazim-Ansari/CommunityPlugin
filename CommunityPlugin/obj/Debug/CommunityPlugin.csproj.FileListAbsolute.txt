@@ -253,4 +253,3 @@ C:\Code\CommunityPlugin\CommunityPlugin\bin\Debug\CommunityPlugin.dll.config
 C:\Code\CommunityPlugin\CommunityPlugin\bin\Debug\CommunityPlugin.dll
 C:\Code\CommunityPlugin\CommunityPlugin\bin\Debug\CommunityPlugin.pdb
 C:\Code\CommunityPlugin\CommunityPlugin\obj\Debug\CommunityPlugin.csproj.CopyComplete
-C:\Code\CommunityPlugin\CommunityPlugin\obj\Debug\CommunityPlugin.csprojAssemblyReference.cache

@@ -5,7 +5,6 @@ namespace CommunityPlugin.Objects.CustomDataObjects
 {
     public class FilterCDO
     {
-        public const string Key = "FilterSettings.json";
         public List<FieldFilter> Filters { get; set; }
         public FilterCDO()
         {

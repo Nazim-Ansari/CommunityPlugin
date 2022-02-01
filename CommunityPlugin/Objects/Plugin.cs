@@ -13,6 +13,8 @@ namespace CommunityPlugin.Objects
 {
     public abstract class Plugin : IPlugin
     {
+        public EllieMae.EMLite.RemotingServices.Sessions.Session RemoteSession => EllieMae.EMLite.RemotingServices.Session.DefaultInstance;
+        public Loan Loan => EncompassApplication.CurrentLoan;
         public virtual void Configure()
         {
 

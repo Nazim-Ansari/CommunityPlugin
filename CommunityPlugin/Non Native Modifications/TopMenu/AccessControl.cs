@@ -15,7 +15,7 @@ namespace CommunityPlugin.Objects
 {
     public partial class AccessControl : UserControl
     {
-        private CommunitySettings CDO = CustomDataObject.Get<CommunitySettings>(CommunitySettings.Key);
+        private CommunitySettings CDO = CustomDataObject.Get<CommunitySettings>();
         private PluginAccessRight right;
         public AccessControl()
         {
@@ -59,8 +59,8 @@ namespace CommunityPlugin.Objects
             right.Personas = cbPersonas.CheckedItems.OfType<string>().ToList();
             right.UserIDs = cbUsers.CheckedItems.OfType<string>().ToList();
 
-            CustomDataObject.Save<CommunitySettings>(CommunitySettings.Key, CDO);
-            MessageBox.Show($"{CommunitySettings.Key} Saved");
+            CustomDataObject.Save<CommunitySettings>(CDO);
+            MessageBox.Show($"{right.PluginName} Saved");
         }
 
         private void btnConfig_Click(object sender, EventArgs e)
