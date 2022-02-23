@@ -1,28 +1,34 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using EllieMae.EMLite.ClientServer.Query;
 using EllieMae.EMLite.ClientServer.Reporting;
-using System.Threading;
-using EllieMae.EMLite.RemotingServices;
 using EllieMae.EMLite.Common;
 using EllieMae.EMLite.Common.UI;
+using EllieMae.EMLite.RemotingServices;
 using EllieMae.EMLite.Reporting;
-using EllieMae.EMLite.ContactUI;
 using EllieMae.Encompass.Automation;
-using CommunityPlugin.Objects.Interface;
 using CommunityPlugin.Objects.Helpers;
+using CommunityPlugin.Objects.Interface;
 using CommunityPlugin.Objects.Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Net.Mail;
 
 namespace CommunityPlugin.Objects.Factories
 {
     public class EmailFactory : IFactory
     {
+        private int Seconds = 60;
+
+        /// <summary>
+        /// Every minute, check to see if there are any email triggers to process. 
+        /// Always run any Field Triggers then delete them from the config.
+        /// </summary>
+        /// <returns></returns>
         public List<ITask> GetTriggers()
         {
-            AutoMailerCDO cdo = CustomDataObject.Get<AutoMailerCDO>();
+            AutoMailerCDO cdo = (AutoMailerCDO)Global.CDOs[nameof(AutoMailerCDO)];
             List<MailTrigger> Triggers = cdo.Triggers; 
 
             List<ITask> result = new List<ITask>();
@@ -30,16 +36,29 @@ namespace CommunityPlugin.Objects.Factories
             DateTime Now = DateTime.Now;
             foreach (MailTrigger trigger in Triggers.Where(x => x.Active))
             {
-                bool run = false;
-                if (!trigger.Active)
-                    continue;
+                bool field = trigger.TriggerType == Enums.MailTriggerType.Field;
+                bool run = field;
+                if (!run)
+                {
+                    bool onTime = trigger.Time.Hour.Equals(Now.Hour) && trigger.Time.Minute.Equals(Now.Minute) && Math.Abs(trigger.Time.Second - Now.Second) < Seconds;
+                    if (!onTime)
+                        continue;
 
-                bool onTime = trigger.Time.Hour.Equals(Now.Hour) && trigger.Time.Minute.Equals(Now.Minute) && Math.Abs(trigger.Time.Second - Now.Second) < 10;
-                run = (trigger.Frequency == Enums.FrequencyType.Daily || trigger.Frequency == Enums.FrequencyType.Weekly || trigger.Frequency == Enums.FrequencyType.BiWeekly) && DaysOfWeek(trigger.Days).Contains(Now.DayOfWeek.ToString()) && onTime;
-                if (!run)
-                    run = trigger.Frequency == Enums.FrequencyType.Monthly && onTime && Now.Day.Equals(trigger.Date.Day);
-                if (!run)
-                    run = trigger.Frequency == Enums.FrequencyType.Yearly && onTime && Now.Day.Equals(trigger.Date.Day) && Now.Month.Equals(trigger.Date.Month);
+                    switch (trigger.Frequency)
+                    {
+                        case Enums.FrequencyType.Daily:
+                        case Enums.FrequencyType.Weekly:
+                        case Enums.FrequencyType.BiWeekly:
+                            run = DaysOfWeek(trigger.Days).Contains(Now.DayOfWeek.ToString());
+                            break;
+                        case Enums.FrequencyType.Monthly:
+                            run = Now.Day.Equals(trigger.Date.Day);
+                            break;
+                        case Enums.FrequencyType.Yearly:
+                            run = Now.Day.Equals(trigger.Date.Day) && Now.Month.Equals(trigger.Date.Month);
+                            break;
+                    }
+                }
 
                 if (run)
                     result.Add(trigger);
@@ -73,6 +92,10 @@ namespace CommunityPlugin.Objects.Factories
         public static void Run(MailTrigger Trigger)
         {
             GetGuidsFromReport(Trigger);
+
+            AutoMailerCDO cdo = (AutoMailerCDO)Global.CDOs[nameof(AutoMailerCDO)];
+            if (Trigger.TriggerType == Enums.MailTriggerType.Field)
+                cdo.Triggers.Remove(Trigger);
         }
 
         private static void GetGuidsFromReport(MailTrigger Trigger)
@@ -105,55 +128,34 @@ namespace CommunityPlugin.Objects.Factories
 
             if (fieldsAreGuids)
             {
-                SendEmails(Trigger, guids);
+                SendEmails(Trigger, guids, reportResults);
             }
         }
 
-        private static void SendEmails(MailTrigger Trigger, List<string> guids)
+        private static void SendEmails(MailTrigger Trigger, List<string> guids, List<string[]> reportResults)
         {
-            foreach (string guid in guids)
+            if (Trigger.TriggerType.Equals(Enums.MailTriggerType.ScheduleFill))
             {
+                guids.ForEach(x => EncompassHelper.SendEmail(Trigger.FillMessage(x)));
+            }
+            else if (Trigger.TriggerType.Equals(Enums.MailTriggerType.ScheduleAttach))
+            {
+                //DataTable dt = FileParser.DataTableFromReport(reportResults);
+                //Trigger.AttachMessage(dt)
 
-                MailMessage mail = new MailMessage();
-                mail.From = new MailAddress(EncompassApplication.CurrentUser.Email, EncompassApplication.CurrentUser.FullName);
-                mail.IsBodyHtml = true;
-                mail.Subject = InsertEncompassValue(Trigger.Subject, guid);
-                mail.Body = InsertEncompassValue(Trigger.Body, guid);
-                foreach (string email in Trigger.To.Split(','))
-                    mail.To.Add(new MailAddress(InsertEncompassValue(email, guid)));
-                EncompassHelper.SendEmail(mail);
+
             }
 
             //Email Owner of Report
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(EncompassApplication.CurrentUser.Email, EncompassApplication.CurrentUser.FullName);
-            mailMessage.Subject = $"Report for {Trigger.Name}";
-            mailMessage.Body = $"Loans that were included in the emailed report {string.Join(Environment.NewLine, guids)}";
-            mailMessage.To.Add(new MailAddress(EncompassApplication.CurrentUser.Email));
-            EncompassHelper.SendEmail(mailMessage);
+            //MailMessage mailMessage = new MailMessage();
+            //mailMessage.From = new MailAddress(EncompassApplication.CurrentUser.Email, EncompassApplication.CurrentUser.FullName);
+            //mailMessage.Subject = $"Report for {Trigger.Name}";
+            //mailMessage.Body = $"Loans that were included in the emailed report {string.Join(Environment.NewLine, guids)}";
+            //mailMessage.To.Add(new MailAddress(EncompassApplication.CurrentUser.Email));
+            //EncompassHelper.SendEmail(mailMessage);
         }
 
-        private static string InsertEncompassValue(string Convert, string guid)
-        {
-            if (!Convert.Contains("["))
-                return Convert;
-
-            string result = Convert;
-            result = result.Replace("[", " [").Replace("]", "] ");
-            string[] split = result.Split('[', ']');
-            string finalHtml = String.Join(" ", split);
-            string[] mergeFields = result.Split().Where(x => x.StartsWith("[") && x.EndsWith("]")).Select(x => x.Replace("[", "").Replace("]", "")).ToArray();
-            
-            string[] values = EncompassHelper.GetReportValues(mergeFields, guid);
-
-            for (int i = 0; i < values.Length; i++)
-            {
-                string val = values[i] == null ? mergeFields[i] : values[i];
-                result = result.Replace($"[{mergeFields[i]}]", values[i]);
-            }
-
-            return result;
-        }
+       
 
         private static QueryCriterion CreateLoanCustomFilter(ReportSettings ReportSettings)
         {

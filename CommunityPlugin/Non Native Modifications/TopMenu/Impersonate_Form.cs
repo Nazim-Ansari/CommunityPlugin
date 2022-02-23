@@ -1,11 +1,7 @@
 ﻿using CommunityPlugin.Objects.Helpers;
 using EllieMae.EMLite.Common.UI;
 using EllieMae.EMLite.MainUI;
-using EllieMae.Encompass.Automation;
-using EllieMae.Encompass.BusinessObjects.Users;
 using System;
-using System.Data;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace CommunityPlugin.Non_Native_Modifications.TopMenu

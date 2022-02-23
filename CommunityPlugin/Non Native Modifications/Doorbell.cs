@@ -1,4 +1,6 @@
-﻿using CommunityPlugin.Objects;
+﻿using CommunityPlugin.Configurations;
+using CommunityPlugin.Objects;
+using CommunityPlugin.Objects.CustomDataObjects;
 using CommunityPlugin.Objects.Helpers;
 using CommunityPlugin.Objects.Interface;
 using CommunityPlugin.Objects.Models;
@@ -18,14 +20,25 @@ namespace CommunityPlugin.Non_Native_Modifications
         private bool Hide;
         private ToolStripItem DoorBellItem;
         private string DingBackID;
-        private string DingBackBorrower;
+        private string DingBackMessage;
         private GridView Pipeline;
         private bool SendOutOfFileMessage;
         private PipelineInfo Tag;
+        private DoorbellCDO CDO;
 
+        public override void Configure()
+        {
+            DoorbellForm f = new DoorbellForm();
+            f.ShowDialog();
+        }
         public override void Login(object sender, EventArgs e)
         {
             DoorBellItem = new ToolStripMenuItem("DoorBell");
+            CDO = CustomDataObject.Get<DoorbellCDO>();
+            if (string.IsNullOrEmpty(CDO.UserInFileMessage))
+                CDO.UserInFileMessage = $"Please exit the Loan, {EncompassHelper.User.ID} needs access";
+            if (string.IsNullOrEmpty(CDO.UserOutMessage))
+                CDO.UserOutMessage = "User is out of the Loan [364] [4002],[4000]";
         }
 
         public override void LoanClosing(object sender, EventArgs e)
@@ -35,7 +48,7 @@ namespace CommunityPlugin.Non_Native_Modifications
 
             SendOutOfFileMessage = false;
             DingBackID = string.Empty;
-            DingBackBorrower = string.Empty;
+            DingBackMessage = string.Empty;
         }
 
         public override void PipelineTabChanged(object sender, EventArgs e)
@@ -81,42 +94,37 @@ namespace CommunityPlugin.Non_Native_Modifications
         private void RingDoorbell()
         {
             DataExchange data = EncompassApplication.Session.DataExchange;
-            string lockInfo = $"{EncompassHelper.User.FullName} Is Trying to Access Loan File #{Tag.LoanNumber}, Please Exit the File For A Moment";
+            string lockInfo = $"exit: {EncompassHelper.InsertEncompassValue(CDO.UserInFileMessage, Tag.GUID).Replace("{user}", EncompassHelper.User.ID)}";  
             data.PostDataToUser(Tag.LockInfo.LockedBy, lockInfo);
         }
 
         private void DingBack(string LoanNumber)
         {
             DataExchange data = EncompassApplication.Session.DataExchange;
-            string loanNumber = !string.IsNullOrEmpty(LoanNumber) ? LoanNumber : EncompassApplication.CurrentLoan.LoanNumber;
-            string locked = $"{EncompassHelper.User.FullName} Is Out Of {DingBackBorrower} Loans #{LoanNumber}";
+            string locked = $"out: {DingBackMessage}";  
             data.PostDataToUser(DingBackID, locked);
         }
 
         public override void DataExchangeReceived(object sender, DataExchangeEventArgs e)
         {
-            bool isDoorbell = e.Data.ToString().Contains("Is Out Of") || e.Data.ToString().Contains("Trying to Access");
+            bool exit = e.Data.ToString().Contains("exit: ");
+            bool isDoorbell = exit || e.Data.ToString().Contains("out: ");
             if (!Hide && isDoorbell)
             {
                 Hide = false;
-                bool exit = e.Data.ToString().Contains("Exit");
                 System.Media.SoundPlayer music = new System.Media.SoundPlayer(exit ? Resources.Exit : Resources.Out);
                 music.Play();
                 EncompassHelper.ShowOnTop("DoorBell Notification", e.Data.ToString());
 
                 if (exit)
                 {
+                    bool inLoan = EncompassApplication.CurrentLoan == null;
+                    DingBackMessage = EncompassHelper.InsertEncompassValue(CDO.UserOutMessage, Loan.Guid);
                     DingBackID = e.Source.UserID;
-                    if (EncompassApplication.CurrentLoan == null)
-                    {
-                        string loanNumber = e.Data.ToString().Split('#')[1].Split(',')[0];
-                        DingBack(loanNumber);
-                    }
+                    if (inLoan)
+                        DingBack(DingBackMessage);
                     else
-                    {
                         SendOutOfFileMessage = true;
-                        DingBackBorrower = $"{EncompassApplication.CurrentLoan.Fields["4002"].FormattedValue}, {EncompassApplication.CurrentLoan.Fields["4000"].FormattedValue}";
-                    }
                 }
             }
         }

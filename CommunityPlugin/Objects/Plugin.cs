@@ -66,7 +66,6 @@ namespace CommunityPlugin.Objects
 
         public virtual void LoanOpened(object sender, EventArgs e)
         {
-            throw new ImplementationException(GetType().Name, nameof(ILoanOpened), nameof(LoanOpened));
         }
 
         private void Base_LoanOpened(object sender, EventArgs e)
@@ -179,10 +178,8 @@ namespace CommunityPlugin.Objects
         }
 
 
-        public virtual void Login(object sender, EventArgs e)
-        {
-            //throw new ImplementationException(GetType().Name, nameof(ILogin), nameof(Login));
-        }
+        public virtual void Login(object sender, EventArgs e) { }
+
         private void Base_Login(object sender, EventArgs e)
         {
             try
@@ -197,10 +194,8 @@ namespace CommunityPlugin.Objects
         }
 
 
-        public virtual void DataExchangeReceived(object sender, DataExchangeEventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(IDataExchangeReceived), nameof(DataExchangeReceived));
-        }
+        public virtual void DataExchangeReceived(object sender, DataExchangeEventArgs e) { }
+
         private void Base_DataExchangeReceived(object sender, DataExchangeEventArgs e)
         {
             try
@@ -214,10 +209,8 @@ namespace CommunityPlugin.Objects
         }
 
 
-        public virtual void BeforeCommit(object sender, EventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(IBeforeCommit), nameof(BeforeCommit));
-        }
+        public virtual void BeforeCommit(object sender, EventArgs e) { }
+
         private void Base_BeforeCommit(object sender, EventArgs e)
         {
             BeforeCommit(sender, e);
@@ -225,72 +218,58 @@ namespace CommunityPlugin.Objects
 
         public virtual void BeforeMilestoneCompleted(object sender, EllieMae.Encompass.BusinessObjects.Loans.CancelableMilestoneEventArgs e)
         {
-            throw new ImplementationException(GetType().Name, nameof(IBeforeMilestoneCompleted), nameof(BeforeMilestoneCompleted));
+
         }
         private void Base_BeforeMilestoneCompleted(object sender, EllieMae.Encompass.BusinessObjects.Loans.CancelableMilestoneEventArgs e)
         {
             BeforeMilestoneCompleted(sender, e);
         }
 
-        public virtual void Committed(object sender, EventArgs e)
-        {
-            //throw new ImplementationException(GetType().Name, nameof(ICommitted), nameof(Committed));
-        }
+        public virtual void Committed(object sender, EventArgs e) { }
+
         private void Base_Committed(object sender, EventArgs e)
         {
             Committed(sender, e);
         }
 
 
-        public virtual void LoanClosing(object sender, EventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(ILoanClosing), nameof(LoanClosing));
-        }
+        public virtual void LoanClosing(object sender, EventArgs e) { }
+
         private void Base_LoanClosing(object sender, EventArgs e)
         {
             LoanClosing(sender, e);
         }
 
-        public virtual void LogEntryAdded(object sender, LogEntryEventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(ILogEntryAdded), nameof(LogEntryAdded));
-        }
+        public virtual void LogEntryAdded(object sender, LogEntryEventArgs e) { }
+
         private void Base_LogEntryAdded(object sender, LogEntryEventArgs e)
         {
             LogEntryAdded(sender, e);
         }
 
-        public virtual void LogEntryChanged(object sender, LogEntryEventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(ILogEntryChanged), nameof(LogEntryChanged));
-        }
+        public virtual void LogEntryChanged(object sender, LogEntryEventArgs e) { }
+
         private void Base_LogEntryChanged(object sender, LogEntryEventArgs e)
         {
             LogEntryChanged(sender, e);
         }
 
-        public virtual void LogEntryRemoved(object sender, LogEntryEventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(ILogEntryRemoved), nameof(LogEntryRemoved));
-        }
+        public virtual void LogEntryRemoved(object sender, LogEntryEventArgs e) { }
+
         private void Base_LogEntryRemoved(object sender, LogEntryEventArgs e)
         {
             LogEntryRemoved(sender, e);
         }
 
-        public virtual void MilestoneCompleted(object sender, EllieMae.Encompass.BusinessObjects.Loans.MilestoneEventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(IMilestoneCompleted), nameof(MilestoneCompleted));
-        }
+        public virtual void MilestoneCompleted(object sender, EllieMae.Encompass.BusinessObjects.Loans.MilestoneEventArgs e) { }
+
         private void Base_MilestoneCompleted(object sender, EllieMae.Encompass.BusinessObjects.Loans.MilestoneEventArgs e)
         {
             MilestoneCompleted(sender, e);
         }
 
-        public virtual void FieldChanged(object sender, FieldChangeEventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(IFieldChange), nameof(FieldChanged));
-        }
+        public virtual void FieldChanged(object sender, FieldChangeEventArgs e) { }
+
 
         private void Base_FieldChange(object sender, FieldChangeEventArgs e)
         {
@@ -304,20 +283,16 @@ namespace CommunityPlugin.Objects
             }
         }
 
-        public virtual void FormLoaded(object sender, EventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(IFormLoaded), nameof(FormLoaded));
-        }
+        public virtual void FormLoaded(object sender, EventArgs e) { }
+
         private void Base_FormLoaded(object sender, EventArgs e)
         {
             FormLoaded(sender, e);
         }
 
 
-        public virtual void NativeFormLoaded(object sender, FormOpenedArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(INativeFormLoaded), nameof(NativeFormLoaded));
-        }
+        public virtual void NativeFormLoaded(object sender, FormOpenedArgs e) { }
+
         private void Base_NativeFormLoaded(object sender, FormOpenedArgs e)
         {
             try
@@ -331,19 +306,17 @@ namespace CommunityPlugin.Objects
         }
 
 
-        public virtual void TabChanged(object sender, EventArgs e)
-        {
-            throw new ImplementationException(GetType().Name, nameof(ITabChanged), nameof(TabChanged));
-        }
+        public virtual void TabChanged(object sender, EventArgs e) { }
+
 
         public virtual void LoanTabChanged(object sender, EventArgs e)
         {
-            throw new ImplementationException(GetType().Name, nameof(ITabChanged), nameof(LoanTabChanged));
+            
         }
 
         public virtual void PipelineTabChanged(object sender, EventArgs e)
         {
-            throw new ImplementationException(GetType().Name, nameof(ITabChanged), nameof(PipelineTabChanged));
+
         }
 
         private void Base_TabChanged(object sender, EventArgs e)

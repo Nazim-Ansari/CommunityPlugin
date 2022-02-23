@@ -9,7 +9,7 @@ namespace CommunityPlugin
         //test
         public PluginEntry()
         {
-            Plugins.Start();
+            CommunityPlugin.Objects.Plugins.Start();
         }
     }
 }

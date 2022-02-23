@@ -61,6 +61,27 @@ namespace CommunityPlugin.Objects.Helpers
         {
             EncompassApplication.Session.Loans.SubmitBatchUpdate(Batch);
         }
+        public static string InsertEncompassValue(string Convert, string guid)
+        {
+            if (!Convert.Contains("["))
+                return Convert;
+
+            string result = Convert;
+            result = result.Replace("[", " [").Replace("]", "] ");
+            string[] split = result.Split('[', ']');
+            string finalHtml = String.Join(" ", split);
+            string[] mergeFields = result.Split().Where(x => x.StartsWith("[") && x.EndsWith("]")).Select(x => x.Replace("[", "").Replace("]", "")).ToArray();
+
+            string[] values = EncompassHelper.GetReportValues(mergeFields, guid);
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                string val = values[i] == null ? mergeFields[i] : values[i];
+                result = result.Replace($"[{mergeFields[i]}]", values[i]);
+            }
+
+            return result;
+        }
         public static object ParseExpression(string Expression, bool TrueFalseOnly = false)
         {
             object result = null;
