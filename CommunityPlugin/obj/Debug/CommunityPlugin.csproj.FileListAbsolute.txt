@@ -250,3 +250,4 @@ C:\Code\CommunityPlugin\CommunityPlugin\obj\Debug\CommunityPlugin.csproj.CopyCom
 C:\Code\CommunityPlugin\CommunityPlugin\bin\Debug\HtmlAgilityPack.dll
 C:\Code\CommunityPlugin\CommunityPlugin\bin\Debug\HtmlAgilityPack.xml
 C:\Code\CommunityPlugin\CommunityPlugin\obj\Debug\CommunityPlugin.Configurations.DoorbellForm.resources
+C:\Code\CommunityPlugin\CommunityPlugin\obj\Debug\CommunityPlugin.csprojAssemblyReference.cache

@@ -209,9 +209,9 @@ namespace CommunityPlugin.Objects
         }
 
 
-        public virtual void BeforeCommit(object sender, EventArgs e) { }
+        public virtual void BeforeCommit(object sender, CancelableEventArgs e) { }
 
-        private void Base_BeforeCommit(object sender, EventArgs e)
+        private void Base_BeforeCommit(object sender, CancelableEventArgs e)
         {
             BeforeCommit(sender, e);
         }
@@ -283,9 +283,9 @@ namespace CommunityPlugin.Objects
             }
         }
 
-        public virtual void FormLoaded(object sender, EventArgs e) { }
+        public virtual void FormLoaded(object sender, FormChangeEventArgs e) { }
 
-        private void Base_FormLoaded(object sender, EventArgs e)
+        private void Base_FormLoaded(object sender, FormChangeEventArgs e)
         {
             FormLoaded(sender, e);
         }
