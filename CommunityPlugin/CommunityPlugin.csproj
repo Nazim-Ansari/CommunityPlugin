@@ -361,6 +361,7 @@
     <Compile Include="Objects\Enums\CloneBizRuleType.cs" />
     <Compile Include="Objects\Enums\CloneCondition.cs" />
     <Compile Include="Objects\Enums\DataProvider.cs" />
+    <Compile Include="Objects\Enums\DoorbellMsgType.cs" />
     <Compile Include="Objects\Enums\EncompassLogType.cs" />
     <Compile Include="Objects\Enums\FrequencyType.cs" />
     <Compile Include="Objects\Enums\GSEServiceType.cs" />
@@ -438,6 +439,7 @@
     <Compile Include="Objects\Models\BlockingCollectionQueue.cs" />
     <Compile Include="Objects\Models\BusRule.cs" />
     <Compile Include="Objects\Models\CloneBizRuleInfo.cs" />
+    <Compile Include="Objects\Models\DoorBellMsg.cs" />
     <Compile Include="Objects\Models\EncompassFieldInfo.cs" />
     <Compile Include="Objects\Models\EncompassLog.cs" />
     <Compile Include="Objects\CustomDataObjects\FilterCDO.cs" />

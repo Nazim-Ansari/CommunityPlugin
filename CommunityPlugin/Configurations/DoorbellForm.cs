@@ -14,6 +14,7 @@ namespace CommunityPlugin.Configurations
             CDO = CustomDataObject.Get<DoorbellCDO>();
             txtRequester.Text = CDO.UserOutMessage;
             txtInLoan.Text = CDO.UserInFileMessage;
+            txtConfirmation.Text = CDO.ConfirmationMessage;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -25,6 +26,7 @@ namespace CommunityPlugin.Configurations
         {
             CDO.UserOutMessage = txtRequester.Text;
             CDO.UserInFileMessage = txtInLoan.Text;
+            CDO.ConfirmationMessage = txtConfirmation.Text;
             CustomDataObject.Save<DoorbellCDO>(CDO);
             this.Close();
         }

@@ -44,7 +44,12 @@ namespace CommunityPlugin.Non_Native_Modifications
         public override void LoanClosing(object sender, EventArgs e)
         {
             if (SendOutOfFileMessage)
-                DingBack(string.Empty);
+            {
+                DoorBellMsg msg = new DoorBellMsg();
+                msg.Type = Objects.Enums.DoorbellMsgType.Out;
+                msg.Message = DingBackMessage;
+                PostMsg(msg, DingBackID);
+            }
 
             SendOutOfFileMessage = false;
             DingBackID = string.Empty;
@@ -89,42 +94,66 @@ namespace CommunityPlugin.Non_Native_Modifications
             ToolStripItem Item = sender as ToolStripItem;
             if (Item.Text.Equals("DoorBell"))
                 RingDoorbell();
+
+            MessageBox.Show(FillMessage(CDO.ConfirmationMessage));
         }
 
         private void RingDoorbell()
         {
-            DataExchange data = EncompassApplication.Session.DataExchange;
-            string lockInfo = $"exit: {EncompassHelper.InsertEncompassValue(CDO.UserInFileMessage, Tag.GUID).Replace("{user}", EncompassHelper.User.ID)}";  
-            data.PostDataToUser(Tag.LockInfo.LockedBy, lockInfo);
+            DoorBellMsg msg = new DoorBellMsg();
+            msg.Type = Objects.Enums.DoorbellMsgType.Exit;
+            msg.Message = FillMessage(CDO.UserInFileMessage, Tag.LockInfo);
+            PostMsg(msg, Tag.LockInfo.LockedBy);
         }
 
-        private void DingBack(string LoanNumber)
+
+        private void PostMsg(DoorBellMsg Msg, string ID)
         {
             DataExchange data = EncompassApplication.Session.DataExchange;
-            string locked = $"out: {DingBackMessage}";  
-            data.PostDataToUser(DingBackID, locked);
+            data.PostDataToUser(ID, JsonConvert.SerializeObject(Msg));
         }
-
+        private string FillMessage(string Input, string Guid = null, bool User = true)
+        {
+            return EncompassHelper.InsertEncompassValue(Input, Guid ?? Tag.GUID).Replace("{user}", EncompassHelper.User.ID).Replace("{name}", EncompassHelper.User.FullName);
+        }
+        private string FillMessage(string Input, LockInfo Lock)
+        {
+            return EncompassHelper.InsertEncompassValue(Input, Tag.GUID).Replace("{user}", Lock.LockedBy).Replace("{name}", $"{Lock.LockedByFirstName} {Lock.LockedByLastName}");
+        }
         public override void DataExchangeReceived(object sender, DataExchangeEventArgs e)
         {
-            bool exit = e.Data.ToString().Contains("exit: ");
-            bool isDoorbell = exit || e.Data.ToString().Contains("out: ");
-            if (!Hide && isDoorbell)
-            {
-                Hide = false;
-                System.Media.SoundPlayer music = new System.Media.SoundPlayer(exit ? Resources.Exit : Resources.Out);
-                music.Play();
-                EncompassHelper.ShowOnTop("DoorBell Notification", e.Data.ToString());
+            DoorBellMsg msg = JsonConvert.DeserializeObject<DoorBellMsg>(e.Data.ToString());
+            if (msg == null)
+                return;
 
-                if (exit)
+            System.Media.SoundPlayer music = new System.Media.SoundPlayer();
+            music.Stream = msg.Type.Equals(Objects.Enums.DoorbellMsgType.Exit) ? Resources.Exit :
+                           msg.Type.Equals(Objects.Enums.DoorbellMsgType.Out) ? Resources.Out : 
+                           Resources.Out;
+            music.Play(); 
+            EncompassHelper.ShowOnTop("DoorBell Notification", msg.Message);
+            if (msg.Type.Equals(Objects.Enums.DoorbellMsgType.Exit))
+            {
+                bool inLoan = EncompassApplication.CurrentLoan == null;
+                DingBackMessage = FillMessage(CDO.UserOutMessage, Loan.Guid);
+                DingBackID = e.Source.UserID;
+                if (inLoan)
                 {
-                    bool inLoan = EncompassApplication.CurrentLoan == null;
-                    DingBackMessage = EncompassHelper.InsertEncompassValue(CDO.UserOutMessage, Loan.Guid);
-                    DingBackID = e.Source.UserID;
-                    if (inLoan)
-                        DingBack(DingBackMessage);
-                    else
-                        SendOutOfFileMessage = true;
+                    DoorBellMsg cMsg = new DoorBellMsg();
+                    msg.Type = Objects.Enums.DoorbellMsgType.Out;
+                    msg.Message = FillMessage(CDO.UserOutMessage);
+                    PostMsg(cMsg, e.Source.UserID);
+                }
+                else
+                {
+                    //We can use this if we want the requesting user to know when the infile user see's their message
+
+                    //EllieMae.Encompass.BusinessObjects.Users.User c = EncompassApplication.CurrentUser;
+                    //DoorBellMsg cMsg = new DoorBellMsg();
+                    //msg.Type = Objects.Enums.DoorbellMsgType.Confirm;
+                    //msg.Message = FillMessage(CDO.ConfirmationMessage, Loan.Guid);
+                    //PostMsg(cMsg, e.Source.UserID);
+                    SendOutOfFileMessage = true;
                 }
             }
         }

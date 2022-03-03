@@ -35,11 +35,13 @@
             this.txtInLoan = new System.Windows.Forms.TextBox();
             this.txtRequester = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.txtConfirmation = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(169, 99);
+            this.btnSave.Location = new System.Drawing.Point(378, 114);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 0;
@@ -49,7 +51,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(250, 99);
+            this.btnCancel.Location = new System.Drawing.Point(459, 114);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 1;
@@ -60,7 +62,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(71, 32);
+            this.label1.Location = new System.Drawing.Point(12, 39);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(140, 13);
             this.label1.TabIndex = 2;
@@ -77,33 +79,52 @@
             // 
             // txtInLoan
             // 
-            this.txtInLoan.Location = new System.Drawing.Point(225, 29);
+            this.txtInLoan.Location = new System.Drawing.Point(225, 36);
             this.txtInLoan.Name = "txtInLoan";
-            this.txtInLoan.Size = new System.Drawing.Size(100, 20);
+            this.txtInLoan.Size = new System.Drawing.Size(309, 20);
             this.txtInLoan.TabIndex = 4;
             // 
             // txtRequester
             // 
             this.txtRequester.Location = new System.Drawing.Point(225, 62);
             this.txtRequester.Name = "txtRequester";
-            this.txtRequester.Size = new System.Drawing.Size(100, 20);
+            this.txtRequester.Size = new System.Drawing.Size(309, 20);
             this.txtRequester.TabIndex = 5;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(101, 9);
+            this.label3.Location = new System.Drawing.Point(240, 16);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(165, 13);
+            this.label3.Size = new System.Drawing.Size(288, 17);
             this.label3.TabIndex = 6;
-            this.label3.Text = "( Use \'{user}\' for requesting User )";
+            this.label3.Text = "( Use {user} for id and {name} for full name )";
+            // 
+            // txtConfirmation
+            // 
+            this.txtConfirmation.Location = new System.Drawing.Point(225, 88);
+            this.txtConfirmation.Name = "txtConfirmation";
+            this.txtConfirmation.Size = new System.Drawing.Size(309, 20);
+            this.txtConfirmation.TabIndex = 8;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 91);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(153, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Doorbell Confirmation Message";
             // 
             // DoorbellForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(335, 134);
+            this.ClientSize = new System.Drawing.Size(546, 147);
+            this.Controls.Add(this.txtConfirmation);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtRequester);
             this.Controls.Add(this.txtInLoan);
@@ -111,8 +132,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
-            this.MaximumSize = new System.Drawing.Size(351, 173);
-            this.MinimumSize = new System.Drawing.Size(351, 173);
             this.Name = "DoorbellForm";
             this.Text = "DoorbellForm";
             this.ResumeLayout(false);
@@ -129,5 +148,7 @@
         private System.Windows.Forms.TextBox txtInLoan;
         private System.Windows.Forms.TextBox txtRequester;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtConfirmation;
+        private System.Windows.Forms.Label label4;
     }
 }
